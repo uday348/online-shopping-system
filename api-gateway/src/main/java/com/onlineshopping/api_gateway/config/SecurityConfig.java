@@ -1,3 +1,4 @@
+
 package com.onlineshopping.api_gateway.config;
 
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 .authorizeExchange(exchange -> exchange
+
+                        // Allow browser CORS preflight requests
+                        .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Allow other requests
                         .anyExchange().permitAll()
                 )
 
@@ -42,11 +48,14 @@ public class SecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
+        // Allowed frontend origins
         configuration.setAllowedOrigins(Arrays.asList(
+                "https://online-shopping-frontend.pages.dev",
                 "https://online-shopping-frontend-hrud.onrender.com",
                 "http://localhost:5173"
         ));
 
+        // Allowed HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
@@ -55,6 +64,7 @@ public class SecurityConfig {
                 HttpMethod.OPTIONS.name()
         ));
 
+        // Allowed request headers
         configuration.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
